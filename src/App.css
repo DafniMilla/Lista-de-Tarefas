@@ -3,7 +3,7 @@ body{
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #142338;
+  background-color: #88baff;
 }
 .container{
   background-color: #f0ebd8;
@@ -62,6 +62,18 @@ justify-content: space-between;
   font-size: 16px;           
   transition: background-color 0.3s ease;
 }
+
+.btnEditar{
+  background-color: #2282f0; 
+  color: white;             
+  padding: 4px 3px;        
+  border: none;           
+  border-radius: 5px;        
+  cursor: pointer;           
+  font-size: 16px;           
+  transition: background-color 0.3s ease;
+}
+
 .titulo{
   color: #142338;
   text-align: center;

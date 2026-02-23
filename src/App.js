@@ -1,19 +1,40 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import axios from "axios";
 
 function App() {
-  let [lista, setLista] = useState([]);
-  let [novoItem, setNovoItem] = useState("");
+
+  const api = axios.create({
+    baseURL: ""
+  });
+
+  const [lista, setLista] = useState([]);
+  const [novoItem, setNovoItem] = useState("");
+  const [editando, setEditando] = useState(null);
 
   useEffect(() => {
-  setLista(["Ler", "Estudar matemática", "Consulta",]);
 
-  }, []);
+       carregar();
+
+
+  },[]);
+
+  async function carregar() {
+    try{
+      const response = await api.get("");
+      setLista(response.data);
+    }catch(error){
+      console.log("erro ao carregar")
+    }
+   
+  }
+
+ 
   return (
     <div className='container'>
       <h1 className='titulo'>Lista de tarefas</h1>
       <div className='inputBotao'>
-        <input id='input' placeholder="tarefa" value={novoItem} onChange={value => setNovoItem(value.target.value)} type="text" />
+        <input id='input' placeholder="Adicione uma tarefa" value={novoItem} onChange={value => setNovoItem(value.target.value)} type="text" />
         <button className='btn' onClick={() => adicionarItem()}>Adicionar </button>
       </div>
       <ul className='lista'>
@@ -23,32 +44,58 @@ function App() {
             <button className='btnDelete' onClick={() => deletarItem(index)}>
               Deletar
             </button>
+            <button className="btnEditar" onClick={() => editarItem(item, index)}>
+              Editar
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
 
-  function adicionarItem() {
+ async function adicionarItem() {
     if (novoItem.length <= 0) {
       alert("Digite algo no campo 'tarefa'")
       return;
     }
+    try{
+      await api.post(" ",{
+        descricao:novoItem
+      });
 
-    let itemIndex = lista.indexOf(novoItem);
-    if (itemIndex >= 0) {
-      alert("Voçê já adicionou esta tarefa.");
-      return;
+      await carregar();
+    }catch(error){
+      console.log("sem api");
     }
 
-    setLista([...lista, novoItem]);
-    setNovoItem("")
+      setLista([...lista, novoItem]);
+      setEditando("");
   }
-  function deletarItem(index) {
+
+
+  async function deletarItem(index) {
+
+    try{
+      await api.delete(`   {index}`);
+
+      await carregar();
+    }catch(error){
+      console.log("sem api");
+    }
     let tmpArray = [...lista];
     tmpArray.splice(index, 1);
 
     setLista(tmpArray);
+  }
+
+  async function editarItem(item, index){
+    try{
+      await api.put(``,{
+        descricao:novoItem
+      });
+    }catch(error){
+      console.log("sem api")
+    }
   }
 }
 

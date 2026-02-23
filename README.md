@@ -48,5 +48,8 @@ Permite adicionar e remover tarefas, com validação para evitar erros.
 
 ----
 
-## 👩‍💻 Autor
-Dafni Milla
+## 👩‍💻 Autores
+
+**Dafni Milla** — [@DafniMilla](https://github.com/DafniMilla)
+**Isabela Dias** — [@usuario](https://github.com/KarlosMarques)
+**Karlos Marques** — [@usuario](https://github.com/IsabelaDias)
