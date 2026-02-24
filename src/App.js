@@ -5,7 +5,7 @@ import axios from "axios";
 function App() {
 
   const api = axios.create({
-    baseURL: ""
+    baseURL: "http://localhost:8000"
   });
 
   const [lista, setLista] = useState([]);
@@ -13,20 +13,17 @@ function App() {
   const [editando, setEditando] = useState(null);
 
   useEffect(() => {
-
        carregar();
-
-
   },[]);
 
   async function carregar() {
     try{
-      const response = await api.get("");
+      const response = await api.get("/tarefas");
+      console.log(response.data);
       setLista(response.data);
     }catch(error){
       console.log("erro ao carregar")
     }
-   
   }
 
  
@@ -38,13 +35,13 @@ function App() {
         <button className='btn' onClick={() => adicionarItem()}>Adicionar </button>
       </div>
       <ul className='lista'>
-        {lista.map((item, index) => (
-          <li key={index} className='item'>
-            {item}
-            <button className='btnDelete' onClick={() => deletarItem(index)}>
+        {lista.map((item,index) => (
+          <li key={item.id} className='item'>
+            {item.texto}
+            <button className='btnDelete' onClick={() => deletarItem(item.id)}>
               Deletar
             </button>
-            <button className="btnEditar" onClick={() => editarItem(item, index)}>
+            <button className="btnEditar" onClick={() => editarItem(item)}>
               Editar
             </button>
           </li>
@@ -59,8 +56,8 @@ function App() {
       return;
     }
     try{
-      await api.post(" ",{
-        descricao:novoItem
+      await api.post("/tarefas",{
+        texto:novoItem
       });
 
       await carregar();
@@ -76,7 +73,7 @@ function App() {
   async function deletarItem(index) {
 
     try{
-      await api.delete(`   {index}`);
+      await api.delete(`/tarefas/${index}`);
 
       await carregar();
     }catch(error){
@@ -90,8 +87,8 @@ function App() {
 
   async function editarItem(item, index){
     try{
-      await api.put(``,{
-        descricao:novoItem
+      await api.patch(`/tarefas/${index}`,{
+        texto:novoItem
       });
     }catch(error){
       console.log("sem api")
