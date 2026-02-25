@@ -13,84 +13,124 @@ function App() {
   const [editando, setEditando] = useState(null);
 
   useEffect(() => {
-       carregar();
-  },[]);
+    carregar();
+  }, []);
 
   async function carregar() {
-    try{
+    try {
       const response = await api.get("/tarefas");
       console.log(response.data);
       setLista(response.data);
-    }catch(error){
+    } catch (error) {
       console.log("erro ao carregar")
     }
   }
 
- 
+
   return (
     <div className='container'>
-      <h1 className='titulo'>Lista de tarefas</h1>
+      <h1 className='titulo'>Lista de Tarefas</h1>
       <div className='inputBotao'>
         <input id='input' placeholder="Adicione uma tarefa" value={novoItem} onChange={value => setNovoItem(value.target.value)} type="text" />
-        <button className='btn' onClick={() => adicionarItem()}>Adicionar </button>
+        <button className='btn' onClick={() => {
+
+          editando ? editarItem(editando)
+            : adicionarItem()
+
+        }}>
+          {editando ? "Salvar" : "Adicionar"}
+        </button>
       </div>
       <ul className='lista'>
-        {lista.map((item,index) => (
-          <li key={item.id} className='item'>
-            {item.texto}
-            <button className='btnDelete' onClick={() => deletarItem(item.id)}>
-              Deletar
-            </button>
-            <button className="btnEditar" onClick={() => editarItem(item)}>
-              Editar
-            </button>
-          </li>
+        {lista.map((item, index) => (
+
+
+
+         <li key={item.id} className='item'>
+
+  <span>{item.texto}</span>
+
+  <div className="acoes">
+
+    <button
+      className="btnEditar"
+      onClick={()=>{
+        setEditando(item.id);
+        setNovoItem(item.texto);
+      }}
+    >
+      Editar
+    </button>
+
+    <button
+      className="btnDelete"
+      onClick={()=>deletarItem(item.id)}
+    >
+      Deletar
+    </button>
+
+  </div>
+
+</li>
+
+
+
         ))}
       </ul>
     </div>
   );
 
- async function adicionarItem() {
+  async function adicionarItem() {
     if (novoItem.length <= 0) {
       alert("Digite algo no campo 'tarefa'")
       return;
     }
-    try{
-      await api.post("/tarefas",{
-        texto:novoItem
+    try {
+      await api.post("/tarefas", {
+        texto: novoItem
       });
 
+      setNovoItem("")
       await carregar();
-    }catch(error){
+    } catch (error) {
       console.log("sem api");
     }
 
-      setLista([...lista, novoItem]);
-      setEditando("");
+
   }
 
 
-  async function deletarItem(index) {
+  async function deletarItem(id) {
 
-    try{
-      await api.delete(`/tarefas/${index}`);
+    try {
+      await api.delete(`/tarefas/${id}`);
 
       await carregar();
-    }catch(error){
+    } catch (error) {
       console.log("sem api");
     }
-    let tmpArray = [...lista];
-    tmpArray.splice(index, 1);
 
-    setLista(tmpArray);
   }
 
-  async function editarItem(item, index){
-    try{
-      await api.patch(`/tarefas/${index}`,{
-        texto:novoItem
+  async function editarItem(id) {
+
+    if (novoItem.length <= 0) {
+      alert("Digite algo");
+      return;
+    }
+
+    try {
+
+      await api.patch(`/tarefas/${id}`, {
+        texto: novoItem
       });
-    }catch(error){
+
+      setNovoItem("");
+      setEditando(null);
+
+      await carregar();
+
+    } catch (error) {
       console.log("sem api")
     }
   }
